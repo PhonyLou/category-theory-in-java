@@ -17,7 +17,12 @@ repositories {
 }
 
 dependencies {
+    // keep the aggregated jupiter artifact for convenience
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+
+    // explicit runtime deps so the JUnit Platform launcher and engine are available
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 }
 
 test {
