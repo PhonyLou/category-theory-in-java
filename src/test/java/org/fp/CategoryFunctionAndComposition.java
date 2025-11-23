@@ -74,4 +74,31 @@ class CategoryFunctionAndCompositionTest {
         Function<Integer, String> idAfterF = CategoryFunctionAndComposition.compose(id_i, f);
         Assertions.assertEquals(idAfterF.apply(600), f.apply(600));
     }
+
+    /**
+     * 结合律 (Associativity Law): 三个函数组合的顺序不影响结果。
+     */
+    @Test
+    void testAssociativity() {
+        CategoryFunctionAndComposition cp = new CategoryFunctionAndComposition();
+
+        // f: Integer -> String
+        Function<Integer, String> f = cp.f();
+        // g: String -> Boolean
+        Function<String, Boolean> g = cp.g();
+        // h: Boolean -> String (新定义的函数，用于测试三者组合)
+        Function<Boolean, String> h = b -> b ? "PASS" : "FAIL";
+
+        // 组合方式 1: (h . g) . f
+        Function<String, String> h_after_g = CategoryFunctionAndComposition.compose(g, h);
+        Function<Integer, String> composition1 = CategoryFunctionAndComposition.compose(f, h_after_g);
+
+        // 组合方式 2: h . (g . f)
+        Function<Integer, Boolean> g_after_f = CategoryFunctionAndComposition.compose(f, g);
+        Function<Integer, String> composition2 = CategoryFunctionAndComposition.compose(g_after_f, h);
+
+        // 验证结果是否一致
+        Assertions.assertEquals(composition1.apply(123456), composition2.apply(123456)); // true -> PASS
+        Assertions.assertEquals(composition1.apply(5), composition2.apply(5));           // false -> FAIL
+    }
 }
