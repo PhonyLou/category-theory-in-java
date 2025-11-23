@@ -10,18 +10,29 @@ JAR_PATH="$DEST_DIR/gradle-wrapper.jar"
 
 mkdir -p "$DEST_DIR"
 
-URL="https://repo1.maven.org/maven2/org/gradle/wrapper/gradle-wrapper/${WRAPPER_VERSION}/gradle-wrapper-${WRAPPER_VERSION}.jar"
+# Try several candidate URLs where the wrapper JAR may be hosted
+URLS=(
+  "https://repo1.maven.org/maven2/org/gradle/gradle-wrapper/${WRAPPER_VERSION}/gradle-wrapper-${WRAPPER_VERSION}.jar"
+  "https://repo1.maven.org/maven2/org/gradle/wrapper/gradle-wrapper/${WRAPPER_VERSION}/gradle-wrapper-${WRAPPER_VERSION}.jar"
+)
 
-echo "Downloading gradle-wrapper.jar version ${WRAPPER_VERSION} from Maven Central..."
+for URL in "${URLS[@]}"; do
+  echo "Trying: $URL"
+  if command -v curl >/dev/null 2>&1; then
+    if curl -fSL "$URL" -o "$JAR_PATH"; then
+      echo "Downloaded gradle-wrapper.jar from $URL"
+      exit 0
+    fi
+  elif command -v wget >/dev/null 2>&1; then
+    if wget -O "$JAR_PATH" "$URL"; then
+      echo "Downloaded gradle-wrapper.jar from $URL"
+      exit 0
+    fi
+  fi
+done
 
-if command -v curl >/dev/null 2>&1; then
-  curl -fSL "$URL" -o "$JAR_PATH"
-elif command -v wget >/dev/null 2>&1; then
-  wget -O "$JAR_PATH" "$URL"
-else
-  echo "Error: neither curl nor wget is available to download files."
-  exit 1
-fi
-
-echo "Downloaded to $JAR_PATH"
-
+echo "Error: could not download gradle-wrapper.jar for version ${WRAPPER_VERSION}.\nTried the following URLs:" >&2
+for URL in "${URLS[@]}"; do
+  echo "  $URL" >&2
+done
+exit 1
