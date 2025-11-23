@@ -1,0 +1,18 @@
+# Gradle
+/build/
+.gradle/
+
+# Eclipse
+.project
+.classpath
+
+# Intellij
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Optional: ignore or track wrapper jar. We recommend committing it for reproducible builds.
+# gradle/wrapper/gradle-wrapper.jar
+

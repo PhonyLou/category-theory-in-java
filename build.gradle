@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.fp'
+version = '0.1.0'
+
+java {
+    toolchain {
+        // Use Java 25 for compilation/target as requested
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+}
+
+test {
+    useJUnitPlatform()
+}
